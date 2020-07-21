@@ -1,13 +1,19 @@
 import React from 'react';
 import Course from './components/Course'
 
-const App = ({course}) => {
+const App = ({ courses }) => {
+
+  const courseMain = () =>
+    courses.map(course =>
+      <Course
+        key={course.id}
+        course={course}
+      />
+    )
 
   return (
     <div>
-        <Course 
-        key={course.id}
-        course={course}/>
+      {courseMain()}
     </div>
   )
 }

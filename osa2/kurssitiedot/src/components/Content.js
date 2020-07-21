@@ -5,11 +5,11 @@ import Total from './Total'
 const Content = ({course}) => {
     return (
       <div>
-    <ul>
+    <p>
         {course.parts.map(part => 
             <Part key={part.id} name={part.name} exercises={part.exercises} />
         )}
-    </ul>
+    </p>
     <Total course={course}/>
       </div>
     )

@@ -37,20 +37,22 @@ const App = () => {
     }
   }
 
-  const removePerson = ({id, name}) => {
-    peopleService
-    .remove(id)
-    .then(returnedPerson => {
-      setPersons(persons.filter(p => p.id !==id))
-      // const del = persons.filter(p => id !== p.id)
-      // setPersons(del)
-      // console.log('res', res);
+  const removePerson = (id, name) => {
+    let returnedPersons = persons.filter((person) => {
+      return person.id !== id
     })
+
+    let result = window.confirm(`Do you really want to delete ${name} ?`)
+    if (result) {
+      peopleService
+        .remove(id)
+        .then(setPersons(returnedPersons))
+    }
   }
 
-  const handleNameChange = (event) => {
-    console.log(event.target.value);
-    setNewName(event.target.value)
+  const handleNameChange = (e) => {
+    console.log(e.target.value);
+    setNewName(e.target.value)
   }
 
   const handleNumberChange = (event) => {
@@ -84,7 +86,7 @@ const App = () => {
       <h2>Numbers</h2>
       <div>
         {filteredPersons.map((person, i) =>
-          <Person key={i} person={person} deletePerson={removePerson} />
+          <Person key={i} person={person} deletePerson={() => removePerson(person.id, person.name)} />
         )}
       </div>
     </div>

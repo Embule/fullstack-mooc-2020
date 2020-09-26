@@ -3,7 +3,8 @@ import React from 'react';
 const Filter = ({filterNames}) => {
     return (
 <form>
-    filter shown with 
+    Filter names
+    <br />
     <input onChange={filterNames}  />
 </form>
     )

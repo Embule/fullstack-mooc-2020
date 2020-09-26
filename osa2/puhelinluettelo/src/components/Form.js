@@ -3,26 +3,28 @@ import React from 'react';
 const Form = ({ onSubmit, nameChange, name, numberChange, number }) => {
 
   return (
-    <form onSubmit={onSubmit}>
+    <form 
+    className="form"
+    onSubmit={onSubmit}>
       <div>
-        name:
+        Name:
         <br />
           <input
           onChange={nameChange}
           value={name}
         />
       </div>
+      <br />
       <div>
-        number:
+        Number:
         <br />
           <input
           onChange={numberChange}
           value={number}
         />
-
       </div>
       <div>
-        <button type="submit">add</button>
+        <button className="add" type="submit">Add</button>
       </div>
     </form>
   );

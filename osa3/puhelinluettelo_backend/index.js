@@ -2,6 +2,46 @@ const express = require('express')
 const app = express()
 
 app.use(express.json())
+// creating morgan middleware and it's tokens
+const morgan = require('morgan')
+
+morgan.token('method', function(req, res) {
+    return req.method;
+})
+
+morgan.token('url', function(req, res) {
+    return req.url;
+})
+
+morgan.token('status', function(req, res) {
+    return res.statusCode;
+})
+
+morgan.token('res[content-length]', function(req, res) {
+    return req.headers['content-length'];
+})
+
+morgan.token('response-time', function(req, res) {
+    return ['response-time']
+})
+
+morgan.token('body', function(req, res) {
+    return JSON.stringify(req.body)
+});
+
+app.use(morgan('tiny'))
+app.use(morgan(function (tokens, req, res) {
+    return [
+      tokens.method(req, res),
+      tokens.url(req, res),
+      tokens.status(req, res),
+      tokens.res(req, res, 'content-length'), '-',
+      tokens['response-time'](req, res), 'ms',
+      tokens.body(req, res, JSON.stringify(req.body)),
+    ].join(' ')
+  }))
+
+
 
 let persons = [
     {

@@ -5,6 +5,9 @@ const cors = require('cors')
 app.use(express.json())
 app.use(cors())
 
+//adding middleware to show static content on webpage
+app.use(express.static('build'))
+
 // creating morgan middleware and it's tokens
 const morgan = require('morgan')
 
@@ -83,9 +86,6 @@ const info = "Phonebook has info for " + calculatePeople()
     + " people </br>" + date
 
 app.get('/info', (req, res) => {
-    // const headers = JSON.parse(JSON.stringify(res.getHeaders()))
-    // console.log(headers);
-    // const date = headers.get('Date')
     res.send(info)
 })
 

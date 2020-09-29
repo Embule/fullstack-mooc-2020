@@ -1,7 +1,10 @@
 const express = require('express')
 const app = express()
+const cors = require('cors')
 
 app.use(express.json())
+app.use(cors())
+
 // creating morgan middleware and it's tokens
 const morgan = require('morgan')
 
@@ -42,7 +45,7 @@ app.use(morgan(function (tokens, req, res) {
   }))
 
 
-
+  
 let persons = [
     {
         id: 1,
@@ -141,7 +144,7 @@ app.post('/api/persons', (req, res) => {
     res.json(person)
 })
 
-const PORT = 3001
+const PORT = process.env.PORT || 3001
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`)
 })

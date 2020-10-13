@@ -118,9 +118,24 @@ app.post('/api/persons', (req, res, next) => {
         .catch(err => next(err))
 })
 
+app.put('/api/persons/:id', (req, res, next) => {
+    const body = req.body
+
+    const person = {
+        name: body.name,
+        number: body.number
+    }
+
+    Person.findByIdAndUpdate(req.params.id, person, { new: true })
+        .then(updatedPerson => {
+            res.json(updatedPerson)
+        })
+        .catch(e => next(e))
+})
+
 // olemattomien osoitteiden käsittely
-const unknownEndpoint = (request, response) => {
-    response.status(404).send({ error: 'unknown endpoint' })
+const unknownEndpoint = (req, res) => {
+    res.status(404).send({ error: 'Unknown endpoint' })
 }
 
 app.use(unknownEndpoint)
@@ -130,7 +145,7 @@ const errorHandler = (error, req, res, next) => {
     console.error(error.message)
 
     if (error.name === 'CastError') {
-        return res.status(400).send({ error: 'malformatted id' })
+        return res.status(400).send({ error: 'Bad id' })
     }
 
     next(error)

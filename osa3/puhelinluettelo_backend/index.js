@@ -112,9 +112,11 @@ app.post('/api/persons', (req, res, next) => {
         number: body.number
     })
 
-    person.save().then(savedPerson => {
-        res.json(savedPerson)
-    })
+    person.save()
+        .then(savedPerson => savedPerson.toJSON())
+        .then(savedAndFormattedPerson => {
+            res.json(savedAndFormattedPerson)
+        })
         .catch(err => next(err))
 })
 

@@ -50,6 +50,10 @@ const App = () => {
           setNewNumber('')
           setMessage(`${personObject.name} added succesfully!`)
         })
+        .catch(error => {
+          setErrorMessage(error.message)
+          console.log(error.response.data)
+        })
       setTimeout(() => {
         setMessage(null)
       }, 10000)

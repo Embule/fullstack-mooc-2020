@@ -133,6 +133,28 @@ describe('deleting blogs', () => {
   })
 })
 
+describe('Updating blogs', () => {
+  test('succeeds with status code 200 if blog is updated', async () => {
+    const blogsAtStart = await helper.blogsInDb()
+    const blogToUpdate = blogsAtStart[0]
+
+    const updatedLikes = {
+      likes: 100
+    }
+
+    await api
+      .put(`/api/blogs/${blogToUpdate.id}`)
+      .send(updatedLikes)
+      .expect(200)
+
+    const blogsAtEnd = await helper.blogsInDb()
+
+    const updatedBlog = blogsAtEnd[0]
+
+    expect(updatedBlog.likes).toEqual(100);
+  })
+})
+
 afterAll(() => {
   mongoose.connection.close()
 })

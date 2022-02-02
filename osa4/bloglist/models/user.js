@@ -13,7 +13,7 @@ const userSchema = new mongoose.Schema({
   ],
 })
 
-userSchema.plugin(uniqueValidator)
+
 
 userSchema.set('toJSON', {
   transform: (document, returnedObject) => {
@@ -24,4 +24,8 @@ userSchema.set('toJSON', {
   }
 })
 
-module.exports = mongoose.model('User', userSchema)
+userSchema.plugin(uniqueValidator)
+
+const User = mongoose.model('User', userSchema)
+
+module.exports = User

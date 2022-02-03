@@ -76,8 +76,6 @@ describe('when there is initially one user in db', () => {
       .expect(400)
       .expect('Content-Type', /application\/json/)
 
-    console.log('error ', result.body);
-
     expect(result.body.error).toContain('`username` (`us`) is shorter than the minimum allowed length')
 
     const usersAtEnd = await helper.usersInDb()

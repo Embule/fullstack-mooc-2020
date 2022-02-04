@@ -3,20 +3,25 @@ const User = require('../models/user')
 
 const initialBlogs = [
   {
-    // id: 1,
     title: "01.12.2020",
     author: "John Smith",
     url: "www.facebook.com",
     likes: 57
   },
   {
-    // id: 2,
     title: "My Day",
     author: "Katti Lallinen",
     url: "www.github.com",
     likes: 8
   },
 ]
+
+const blogToAdd = {
+  title: 'Groundhog day',
+  author: 'Hemuli',
+  likes: 1002013,
+  important: true,
+}
 
 const nonExistingId = async () => {
   const blog = new Blog({
@@ -25,6 +30,7 @@ const nonExistingId = async () => {
     url: "www.facebook.com",
     likes: 1
   })
+
   await blog.save()
   await blog.remove()
 
@@ -42,5 +48,9 @@ const usersInDb = async () => {
 }
 
 module.exports = {
-  initialBlogs, nonExistingId, blogsInDb, usersInDb
+  initialBlogs,
+  blogToAdd,
+  nonExistingId,
+  blogsInDb,
+  usersInDb
 }

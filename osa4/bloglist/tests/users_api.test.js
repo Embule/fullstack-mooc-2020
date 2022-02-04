@@ -1,10 +1,10 @@
 const bcrypt = require('bcryptjs')
-const User = require('../models/user')
-
 const mongoose = require('mongoose')
 const supertest = require('supertest')
+
 const app = require('../app')
 const helper = require('./test_helper')
+const User = require('../models/user')
 
 const api = supertest(app)
 
@@ -83,6 +83,7 @@ describe('when there is initially one user in db', () => {
   })
 })
 
-afterAll(() => {
+afterAll(async () => {
+  await User.deleteMany({})
   mongoose.connection.close()
 })

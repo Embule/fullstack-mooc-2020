@@ -1,11 +1,29 @@
 const mongoose = require('mongoose')
 const supertest = require('supertest')
+
 const app = require('../app')
 const helper = require('./test_helper')
 
 const Blog = require('../models/blog')
+const User = require('../models/user')
 
 const api = supertest(app)
+
+let token;
+const user = {
+  username: 'Katti',
+  name: 'Katti Lallinen',
+  password: 'secreTtest9',
+}
+
+beforeAll(async () => {
+  await api
+    .post('/api/users')
+    .send(user)
+
+  const response = await api.post('/api/login').send(user);
+  token = response.body.token;
+});
 
 describe('when there is initially some blogs saved', () => {
   beforeEach(async () => {
@@ -72,15 +90,10 @@ describe('viewing a specific blog', () => {
 
 describe('adding a new blog post', () => {
   test('a valid blog can be added ', async () => {
-    const newBlog = {
-      author: 'Hemuli',
-      content: 'async/await simplifies making async calls',
-      important: true,
-    }
-
     await api
       .post('/api/blogs')
-      .send(newBlog)
+      .send(helper.blogToAdd)
+      .set('Authorization', `Bearer ${token}`)
       .expect(201)
       .expect('Content-Type', /application\/json/)
 
@@ -94,37 +107,51 @@ describe('adding a new blog post', () => {
     )
   })
 
-  test('fails with status code 400 if is invalid', async () => {
+  test('fails with status code 401 if author property is missing ', async () => {
     const newBlog = {
       title: "test2",
       url: "www.facebok.com",
       likes: 1
     }
+    const blogsAtStart = await helper.blogsInDb()
 
     await api
       .post('/api/blogs')
       .send(newBlog)
-      .expect(400)
+      .expect(401)
 
     const blogsAtEnd = await helper.blogsInDb()
 
-    expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length + 1)
+    expect(blogsAtEnd).toHaveLength(blogsAtStart.length)
+  })
+
+  test('adding blog fails with 401 if token is missing ', async () => {
+    const blogsAtStart = await helper.blogsInDb()
+
+    await api
+      .post('/api/blogs')
+      .send(helper.blogToAdd)
+      .expect(401)
+
+    const blogsAtEnd = await helper.blogsInDb()
+    expect(blogsAtEnd).toHaveLength(blogsAtStart.length)
   })
 })
 
 describe('deleting blogs', () => {
   test('succeeds with status code 204 if id is valid', async () => {
     const blogsAtStart = await helper.blogsInDb()
-    const blogToDelete = blogsAtStart[0]
+    const blogToDelete = blogsAtStart[blogsAtStart.length - 1]
 
     await api
       .delete(`/api/blogs/${blogToDelete.id}`)
+      .set('Authorization', `Bearer ${token}`)
       .expect(204)
 
     const blogsAtEnd = await helper.blogsInDb()
 
     expect(blogsAtEnd).toHaveLength(
-      helper.initialBlogs.length
+      blogsAtStart.length - 1
     )
 
     const contents = blogsAtEnd.map(blog => blog.url)
@@ -135,6 +162,8 @@ describe('deleting blogs', () => {
 
 describe('Updating blogs', () => {
   test('succeeds with status code 200 if blog is updated', async () => {
+    await Blog.insertMany(helper.initialBlogs)
+
     const blogsAtStart = await helper.blogsInDb()
     const blogToUpdate = blogsAtStart[0]
 
@@ -155,6 +184,8 @@ describe('Updating blogs', () => {
   })
 })
 
-afterAll(() => {
+afterAll(async () => {
+  await User.deleteMany({})
+  await Blog.deleteMany({})
   mongoose.connection.close()
 })

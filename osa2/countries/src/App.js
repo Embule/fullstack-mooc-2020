@@ -28,25 +28,25 @@ const App = () => {
       return <ul> {filteredCountries.map((country, i) =>
         <li key={i}>{country.name}</li>)} </ul>
     } else {
-    return <div>
-      {filteredCountries.map((country, i) => 
-        <p key={i}>
-          <h3>{country.name}</h3>
-      <p>
-      capital: {country.capital}
-      <br />
-      population: {country.population}
-      </p>
-      <h4>Languages</h4>
-      <ul>
-        {country.languages.map((sub) => 
-        <li>{sub.name}</li>)}
-      </ul>
-      <img src={country.flag} alt='Flag'
-      style={{width:"150px", height:"100px"}}/>
-        </p>
-      )}
-    </div>
+      return <div>
+        {filteredCountries.map((country, i) =>
+          <p key={i}>
+            <h3>{country.name}</h3>
+            <p>
+              capital: {country.capital}
+              <br />
+              population: {country.population}
+            </p>
+            <h4>Languages</h4>
+            <ul>
+              {country.languages.map((sub) =>
+                <li>{sub.name}</li>)}
+            </ul>
+            <img src={country.flag} alt='Flag'
+              style={{ width: "150px", height: "100px" }} />
+          </p>
+        )}
+      </div>
     }
   }
 
@@ -54,12 +54,12 @@ const App = () => {
     <div>
       <form>
         Find Countries
-      <input
+        <input
           type='text'
           onChange={handleFilter} />
       </form>
       <h2>Countries</h2>
-    <p>{showCountries()}</p>
+      <p>{showCountries()}</p>
     </div>
   );
 }

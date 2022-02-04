@@ -28,7 +28,7 @@ const courses = [
         id: 4
       }
     ]
-  }, 
+  },
   {
     name: 'Node.js',
     id: 2,
@@ -48,6 +48,6 @@ const courses = [
 ]
 
 ReactDOM.render(
-    <App courses={courses} />,
+  <App courses={courses} />,
   document.getElementById('root')
 )

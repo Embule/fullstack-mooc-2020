@@ -1,53 +1,62 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios'
 
+import Info from './components/Info'
+
 const App = () => {
   const [countries, setCountries] = useState([])
   const [newFilter, setFilter] = useState('')
+  const [countryToShow, setCountryToShow] = useState(null)
+  const [cityName, setCityName] = useState('')
+  const [weatherInfo, setWeatherInfo] = useState({})
+
+  const apiKey = process.env.REACT_APP_API_KEY
 
   useEffect(() => {
     axios
-      .get('https://restcountries.eu/rest/v2/all')
-      .then(res => {
-        setCountries(res.data)
+      .get('https://restcountries.com/v3.1/all')
+      .then(response => {
+        setCountries(response.data)
       })
-  }, [])
+
+    axios
+      .get(`http://api.openweathermap.org/data/2.5/weather?q=${cityName}&units=metric&appid=${apiKey}`)
+      .then(response => {
+        setWeatherInfo(response.data)
+      })
+  }, [apiKey, cityName])
 
   const handleFilter = e => {
     setFilter(e.target.value)
   }
 
+  const handleInfoClick = (country) => {
+    setCountryToShow(country)
+    setCityName(country.capital[0])
+  }
+
   const filteredCountries = countries.filter(country => {
-    return country.name.toLowerCase().includes(newFilter.toLowerCase())
+    const countryName = country.name.common.toLowerCase()
+    return countryName.includes(newFilter.toLowerCase())
   })
 
   const showCountries = () => {
     if (filteredCountries.length > 10) {
       return <p>Too many matches. Specify another filter.</p>
-    } else if (filteredCountries.length > 1 && filteredCountries.length < 11) {
-      return <ul> {filteredCountries.map((country, i) =>
-        <li key={i}>{country.name}</li>)} </ul>
-    } else {
-      return <div>
-        {filteredCountries.map((country, i) =>
-          <p key={i}>
-            <h3>{country.name}</h3>
-            <p>
-              capital: {country.capital}
-              <br />
-              population: {country.population}
-            </p>
-            <h4>Languages</h4>
-            <ul>
-              {country.languages.map((sub) =>
-                <li>{sub.name}</li>)}
-            </ul>
-            <img src={country.flag} alt='Flag'
-              style={{ width: "150px", height: "100px" }} />
-          </p>
-        )}
-      </div>
     }
+    if (filteredCountries.length > 1 && filteredCountries.length < 11) {
+      return (
+        <div className="countries-container">
+          {filteredCountries.map((country, i) =>
+            <div key={i} className="country">{country.name.common}
+              <button onClick={() => handleInfoClick(country)}>Show more info</button>
+            </div>)}
+          {countryToShow ? <Info country={countryToShow} weather={weatherInfo} /> : null}
+        </div>)
+    }
+    return filteredCountries.length === 1
+      ? <Info country={filteredCountries[0]} weather={weatherInfo} />
+      : <div>No countries were found</div>
   }
 
   return (
@@ -56,10 +65,11 @@ const App = () => {
         Find Countries
         <input
           type='text'
+          style={{ margin: '0 0 0 10px' }}
           onChange={handleFilter} />
       </form>
       <h2>Countries</h2>
-      <p>{showCountries()}</p>
+      <div>{showCountries()}</div>
     </div>
   );
 }

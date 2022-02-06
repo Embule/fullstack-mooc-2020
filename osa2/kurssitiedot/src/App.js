@@ -13,6 +13,7 @@ const App = ({ courses }) => {
 
   return (
     <div>
+      <h1>All Courses</h1>
       {courseMain()}
     </div>
   )

@@ -53,6 +53,17 @@ describe('when there is initially some blogs saved', () => {
       'Katti Lallinen'
     )
   })
+
+  test('returned blogs have valid id property', async () => {
+    const response = await api
+      .get(`/api/blogs`)
+      .expect(200)
+
+    const blogs = response.body
+
+    blogs.forEach(blog =>
+      expect(blog.id).toBeDefined())
+  })
 })
 
 describe('viewing a specific blog', () => {
@@ -105,6 +116,48 @@ describe('adding a new blog post', () => {
     expect(contents).toContain(
       'Katti Lallinen'
     )
+  })
+
+  test('if number of title and url are missing POST fails with code 400 ', async () => {
+    const blogToAdd = {
+      author: 'Hemuli',
+      important: true,
+    }
+
+    const blogsAtStart = await helper.blogsInDb()
+
+    const response = await api
+      .post('/api/blogs')
+      .send(blogToAdd)
+      .set('Authorization', `Bearer ${token}`)
+      .expect(400)
+
+    expect(response.body.error).toContain("Blog validation failed: url: Path `url` is required., title: Path `title` is required.")
+
+    const blogsAtEnd = await helper.blogsInDb()
+    expect(blogsAtEnd).toHaveLength(blogsAtStart.length)
+  })
+
+  test('if number of likes is not given, will return them as 0 ', async () => {
+    const blogToAdd = {
+      title: 'Groundhog day',
+      author: 'Hemuli',
+      url: 'www.moi.net',
+      important: true,
+    }
+
+    const response = await api
+      .post('/api/blogs')
+      .send(blogToAdd)
+      .set('Authorization', `Bearer ${token}`)
+      .expect(201)
+
+    expect(response.body.likes).toEqual(0)
+
+    const blogsAtEnd = await helper.blogsInDb()
+    expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length + 2)
+
+    blogsAtEnd.forEach(n => expect(n.likes).toBeDefined())
   })
 
   test('fails with status code 401 if author property is missing ', async () => {

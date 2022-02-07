@@ -31,10 +31,13 @@ blogRouter.post('/', async (request, response) => {
     if (!decodedToken.id) {
       return response.status(401).json({ error: 'token missing or invalid' })
     }
+    const likes = !body.likes ? 0 : body.likes
+
     const user = await User.findById(decodedToken.id)
 
     const blog = new Blog({
       ...body,
+      likes: likes,
       user: user._id
     })
     const savedBlog = await blog.save()

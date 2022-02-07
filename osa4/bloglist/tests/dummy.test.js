@@ -27,31 +27,13 @@ describe('total likes', () => {
 })
 
 describe('most likes', () => {
-  const listOfBlogs = [
-    {
-      title: "Canonical string reduction",
-      author: "Edsger W. Dijkstra",
-      likes: 12
-    },
-    {
-      _id: '5a422aa71b54a676234d17f8',
-      title: 'Go To Statement Considered Harmful',
-      author: 'Edsger W. Dijkstra',
-      url: 'http://www.u.arizona.edu/~rubinson/copyright_violations/Go_To_Considered_Harmful.html',
-      likes: 5,
-      __v: 0
-    }
-  ]
-
-  const emptyBlogs = []
-
   test('returns the title of blog with most likes', () => {
-    const result = listHelper.favoriteBlog(listOfBlogs)
+    const result = listHelper.favoriteBlog(testHelper.dummyBlogs)
     expect(result).toEqual("Canonical string reduction")
   })
 
-  test('returns text blog list empty if array is empty', () => {
-    const result = listHelper.favoriteBlog(emptyBlogs)
+  test('returns text "blog list empty" if array is empty', () => {
+    const result = listHelper.favoriteBlog([])
     expect(result).toEqual("Bloglist empty")
   })
 })

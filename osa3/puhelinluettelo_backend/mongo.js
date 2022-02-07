@@ -5,10 +5,9 @@ const password = process.argv[2]
 const name = process.argv[3]
 const number = process.argv[4]
 
-const url =
-  `mongodb+srv://fullstack:${password}@cluster0.kvfve.mongodb.net/puhelinluettelo?retryWrites=true&w=majority`
+const url = process.env.MONGODB_URI
 
-mongoose.connect(url, { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false, useCreateIndex: true })
+mongoose.connect(url)
 
 // defines person object schema and its model
 const personSchema = new mongoose.Schema({

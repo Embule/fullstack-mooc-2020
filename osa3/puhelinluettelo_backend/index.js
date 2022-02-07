@@ -1,3 +1,4 @@
+/*eslint-env es6*/
 const express = require('express')
 const app = express()
 const cors = require('cors')
@@ -13,19 +14,19 @@ app.use(express.static('build'))
 const morgan = require('morgan')
 
 morgan.token('method', function (req, res) {
-  return req.method;
+  return req.method
 })
 
 morgan.token('url', function (req, res) {
-  return req.url;
+  return req.url
 })
 
 morgan.token('status', function (req, res) {
-  return res.statusCode;
+  return res.statusCode
 })
 
 morgan.token('res[content-length]', function (req, res) {
-  return req.headers['content-length'];
+  return req.headers['content-length']
 })
 
 morgan.token('response-time', function (req, res) {
@@ -34,7 +35,7 @@ morgan.token('response-time', function (req, res) {
 
 morgan.token('body', function (req, res) {
   return JSON.stringify(req.body)
-});
+})
 
 app.use(morgan('tiny'))
 app.use(morgan(function (tokens, req, res) {
@@ -52,17 +53,13 @@ app.get('/', (req, res) => {
   res.send('<h1>Hello World!</h1>')
 })
 
-// const calculatePeople = () => {
-//     const number = persons.length
-//     return number
-// }
+const getInfo = (people) => 'Phonebook has info for ' + people.length
+  + ' people </br></br>' + new Date()
 
-// const date = new Date();
-// const info = "Phonebook has info for " + calculatePeople()
-//     + " people </br>" + date
-
-app.get('/info', (req, res) => {
-  res.send(info)
+app.get('/info', async (req, res) => {
+  Person.find({}).then(people => {
+    res.send(getInfo(people))
+  })
 })
 
 app.get('/api/persons', (req, res, next) => {
@@ -85,6 +82,7 @@ app.get('/api/persons/:id', (req, res, next) => {
 
 app.delete('/api/persons/:id', (req, res, next) => {
   Person.findByIdAndRemove(req.params.id)
+    // eslint-disable-next-line no-unused-vars
     .then(result => {
       res.status(204).end()
     })
@@ -94,18 +92,11 @@ app.delete('/api/persons/:id', (req, res, next) => {
 app.post('/api/persons', (req, res, next) => {
   const body = req.body
 
-  // if (body.content === undefined) {
-  //     return res.status(400).json({ error: 'content missing' })
-  // }
-  // if (!body.name || !body.number) {
-  //     return res.status(400).json({
-  //         error: 'Name or number missing'
-  //     })
-  // } else if (Person.some(p => p.name === body.name)) {
-  //     return res.status(400).json({
-  //         error: 'Name has already been added'
-  //     })
-  // }
+  if (!body.name || !body.number) {
+    return res.status(400).json({
+      error: 'Name or number missing'
+    })
+  }
 
   const person = new Person({
     name: body.name,
@@ -148,6 +139,8 @@ const errorHandler = (error, req, res, next) => {
 
   if (error.name === 'CastError') {
     return res.status(400).send({ error: 'Bad id' })
+  } else if (error.name === 'ValidationError') {
+    return res.status(400).json({ error: error.message })
   }
 
   next(error)

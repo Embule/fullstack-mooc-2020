@@ -39,7 +39,7 @@ const App = () => {
           setMessage(`${personObject.name} updated succesfully!`)
         })
         .catch(e => {
-          setErrorMessage('Something went wrong while trying to update details. Hit refresh')
+          setErrorMessage('Something went wrong while trying to update details.')
         })
     } else {
       peopleService
@@ -51,11 +51,11 @@ const App = () => {
           setMessage(`${personObject.name} added succesfully!`)
         })
         .catch(error => {
-          setErrorMessage(error.message)
-          console.log(error.response.data)
+          setErrorMessage(error.response.data.error)
         })
       setTimeout(() => {
         setMessage(null)
+        setErrorMessage(null)
       }, 10000)
     }
   }

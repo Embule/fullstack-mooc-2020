@@ -1,10 +1,11 @@
+/*eslint-env es6*/
 const mongoose = require('mongoose')
 const uniqueValidator = require('mongoose-unique-validator')
 require('dotenv').config()
 
 const url = process.env.MONGODB_URI
 
-mongoose.connect(url, { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false, useCreateIndex: true })
+mongoose.connect(url)
   .then(result => {
     console.log('connected to MongoDB')
   })

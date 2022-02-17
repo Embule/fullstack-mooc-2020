@@ -1,10 +1,12 @@
 import React from 'react'
+import PropTypes from 'prop-types'
+
 import Blog from './Blog'
 import Togglable from './Togglable'
 import BlogForm from './BlogForm'
 
 const Blogs = ({ blogs, user, handleLogout, createBlog, addLike }) => {
-  const sortedBlogs = blogs.sort((a, b) => a.likes - b.likes);
+  const sortedBlogs = blogs.sort((a, b) => a.likes - b.likes)
 
   return (
     <div>
@@ -23,5 +25,14 @@ const Blogs = ({ blogs, user, handleLogout, createBlog, addLike }) => {
     </div>
   )
 }
+
+Blogs.propTypes = {
+  handleLogout: PropTypes.func.isRequired,
+  createBlog: PropTypes.func.isRequired,
+  addLike: PropTypes.func.isRequired,
+  user: PropTypes.object.isRequired,
+  blogs: PropTypes.array.isRequired
+}
+
 
 export default Blogs

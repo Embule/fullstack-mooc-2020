@@ -48,10 +48,8 @@ const Blog = ({ blog, addLike }) => {
   }
 
   const showDetails = () => (
-    <div style={detailsStyle}>
+    <div style={detailsStyle} className='detailsContainer'>
       <div>{blog.url}</div>
-
-      <div>{blog.author}</div>
       <div>{likes}
         <button style={buttonStyle} onClick={handleAddLike}>Like</button>
       </div>
@@ -60,7 +58,8 @@ const Blog = ({ blog, addLike }) => {
 
   return (
     <div>
-      <div style={titleStyle}> {blog.title}</div>
+      <div>{blog.author}:</div>
+      <div style={titleStyle}>{blog.title}</div>
       <button style={buttonStyle} onClick={toggleShowInfoButton}>
         {isDetailsShowing ? 'Hide' : 'View'}
       </button>

@@ -1,65 +1,38 @@
-import React, { useState } from 'react'
+import React from 'react'
+import PropTypes from 'prop-types'
+
 import Blog from './Blog'
-import blogService from '../services/blogs'
+import Togglable from './Togglable'
+import BlogForm from './BlogForm'
 
-const Blogs = ({ blogs, user, handleLogout, createMessage }) => {
-  const [title, setTitle] = useState('')
-  const [author, setAuthor] = useState('')
-  const [url, setUrl] = useState('')
-
-  const handleCreateNewBlog = async (event) => {
-    event.preventDefault()
-
-    const newBlog = {
-      title: title,
-      author: author,
-      url: url
-    }
-
-    try {
-      blogService.create(newBlog)
-      createMessage(`A new blog, ${title} by ${author} was added!`)
-      setTitle('')
-      setAuthor('')
-      setUrl('')
-    } catch (exception) {
-      createMessage('Something went wrong while adding a new blog')
-    }
-  }
+const Blogs = ({ blogs, user, handleLogout, createBlog, addLike }) => {
+  const sortedBlogs = blogs.sort((a, b) => a.likes - b.likes)
 
   return (
     <div>
       <h2>blogs</h2>
       <h4>{user.name} is logged in</h4>
       <button onClick={handleLogout}>Logout</button><br />
-      <h3>Create new blog</h3>
-      <form onSubmit={handleCreateNewBlog}>
-        <div>
-          Title: <input type='text'
-            value={title}
-            name={title}
-            onChange={({ target }) => setTitle(target.value)} />
-        </div>
-        <div>
-          Author: <input type='text'
-            value={author}
-            name={author}
-            onChange={({ target }) => setAuthor(target.value)} />
-        </div>
-        <div>
-          Url: <input type='text'
-            value={url}
-            name={url}
-            onChange={({ target }) => setUrl(target.value)} />
-        </div >
-        <input type='submit' value='Create new' />
-      </form>
+      <Togglable buttonLabel='Create new blog'>
+        <BlogForm
+          createBlog={createBlog}
+        />
+      </Togglable>
       <br />
-      {blogs.map(blog =>
-        <Blog key={blog.id} blog={blog} />
+      {sortedBlogs.map(blog =>
+        <Blog key={blog.id} blog={blog} addLike={addLike} />
       )}
     </div>
   )
 }
+
+Blogs.propTypes = {
+  handleLogout: PropTypes.func.isRequired,
+  createBlog: PropTypes.func.isRequired,
+  addLike: PropTypes.func.isRequired,
+  user: PropTypes.object.isRequired,
+  blogs: PropTypes.array.isRequired
+}
+
 
 export default Blogs

@@ -49,9 +49,9 @@ const Blog = ({ blog, addLike }) => {
 
   const showDetails = () => (
     <div style={detailsStyle} className='detailsContainer'>
-      <div>{blog.url}</div>
-      <div>{likes}
-        <button style={buttonStyle} onClick={handleAddLike}>Like</button>
+      <div className='url'>{blog.url}</div>
+      <div className='likes'>{likes}
+        <button className='like-button' style={buttonStyle} onClick={handleAddLike}>Like</button>
       </div>
     </div>
   )

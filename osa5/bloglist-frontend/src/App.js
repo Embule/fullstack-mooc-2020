@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import Blogs from './components/Blogs'
 import Togglable from './components/Togglable'
 import LoginForm from './components/LoginForm'
@@ -10,11 +10,15 @@ const App = () => {
   const [user, setUser] = useState(null)
   const [message, setMessage] = useState('')
 
-  useEffect(() => {
+  const fetchData = useCallback(async () => {
     blogService.getAll().then(blogs =>
       setBlogs(blogs)
     )
-  }, [setBlogs])
+  }, [])
+
+  useEffect(() => {
+    fetchData().catch(console.error)
+  }, [fetchData])
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedBlogAppUser')
@@ -43,7 +47,7 @@ const App = () => {
       setUser(user)
       createMessage(`Welcome ${user.name}!`)
     } catch (exception) {
-      createMessage('Wrong username or passowrd')
+      createMessage('Wrong username or password')
     }
   }
 
@@ -73,7 +77,7 @@ const App = () => {
 
   return (
     <div>
-      <div>{message}</div>
+      <div className='message'>{message}</div>
       {user
         ? <Blogs
           blogs={blogs}
